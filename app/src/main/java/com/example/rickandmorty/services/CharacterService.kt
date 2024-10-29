@@ -1,15 +1,18 @@
 package com.example.rickandmorty.services
 
 import com.example.rickandmorty.models.Character
+import com.example.rickandmorty.models.Info
+import com.example.rickandmorty.models.Result
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CharacterService {
-    @GET("character")
-    suspend fun getCharacters(): List<Character>
 
-    // los query y los path se diferencian con el /{} y otras cosas
+    @GET("character")
+    suspend fun getCharacters(@Query("page") page: Int): Character
+
     @GET("character/{id}")
-    suspend fun getProductById(@Path("id") id:Int) : Character
+    suspend fun getCharacterById(@Path("id") id: Int): Result
 
 }

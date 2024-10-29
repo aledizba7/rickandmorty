@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "detail/{id}",
+                            route = "character_detail/{id}",
                             arguments = listOf(
                                 navArgument("id"){
                                     type=NavType.IntType

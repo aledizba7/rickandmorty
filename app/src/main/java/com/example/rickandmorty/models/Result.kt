@@ -1,6 +1,18 @@
 package com.example.rickandmorty.models
 
 data class Result(
-    val info: Info,
-    val results: List<Result>
-)
+    val created: String,
+    val episode: List<String>,
+    val gender: String,
+    val id: Int,
+    val image: String,
+    val location: Location,
+    val name: String,
+    val origin: Origin,
+    val species: String,
+    val status: String,
+    val type: String,
+    val url: String
+){
+    val computedTitle get() = if(name.length > 11) "${name.substring(0,11)}..." else name // si se pasa de 11 caracteres lo extrae
+}
