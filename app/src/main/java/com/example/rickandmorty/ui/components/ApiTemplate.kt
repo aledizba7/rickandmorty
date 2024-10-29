@@ -58,6 +58,7 @@ fun ApiTemplate(
             modifier = Modifier
                 .weight(1f)
                 .background(Color.DarkGray)
+                .padding(12.dp)
         ){
             body()
         }

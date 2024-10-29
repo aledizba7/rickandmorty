@@ -26,6 +26,7 @@ import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.clip
@@ -43,9 +44,12 @@ fun CharacterCard(result: Result, navController: NavController) {
             .clickable {
                 navController.navigate("character_detail/${result.id}")
             },
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            modifier = Modifier.background(Color.Gray)
+            modifier = Modifier
+                .background(Color.Gray)
+                .fillMaxHeight()
         ) {
             AsyncImage(
                 model = result.image,
@@ -64,26 +68,24 @@ fun CharacterCard(result: Result, navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(10.dp)
+                    .padding(8.dp)
             ) {
                 Text(
                     text = result.name,
                     color = Color.White,style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp
+                    fontSize = 23.sp
                 )
 
-                // Status and Species Row
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Status Icon
                     Icon(
                         imageVector = CircleFilled,
                         contentDescription = null,
                         tint = if (result.status == "Alive") Color.Green else if (result.status == "Dead") Color.Red else Color.DarkGray,
-                        modifier = Modifier.size(12.dp)
+                        modifier = Modifier.size(17.dp)
                     )
 
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
 
                     Text(
                         text = "${result.status} - ${result.species}",
@@ -93,13 +95,12 @@ fun CharacterCard(result: Result, navController: NavController) {
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // Location
                 Text(
                     text = "Last known location: ${result.location.name}",
                     color = Color.White
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
             }
         }

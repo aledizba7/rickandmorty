@@ -1,14 +1,12 @@
 package com.example.rickandmorty.ui.screens
 
+
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import com.example.rickandmorty.composables.CharacterDetailCard
+import com.example.rickandmorty.composables.CharacterImageCard
 import com.example.rickandmorty.models.Result
 import com.example.rickandmorty.services.CharacterService
+import com.example.rickandmorty.ui.components.ApiTemplate
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -49,35 +49,35 @@ fun CharacterDetailScreen(id: Int, innerPaddingValues: PaddingValues) {
         }
     }
 
-    if (isLoading) {
-        Box(
-            modifier = Modifier
-                .padding(innerPaddingValues)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    } else {
-        character?.let {
-            Column(
+    ApiTemplate(innerPadding = innerPaddingValues, header = {  }) {
+        if (isLoading) {
+            Box(
                 modifier = Modifier
                     .padding(innerPaddingValues)
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                AsyncImage(
-                    model = it.image,
-                    contentDescription = it.name,
-                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(bottom = 16.dp)
-                )
-                Text(text = "Name: ${it.name}")
-                Text(text = "Species: ${it.species}")
-                Text(text = "Status: ${it.status}")
-                Text(text = "Gender: ${it.gender}")
+                CircularProgressIndicator()
+            }
+        } else {
+            character?.let { character ->
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(innerPaddingValues)
+                        .fillMaxSize()
+                ) {
+                    item {
+                        CharacterImageCard(character.image, character.name)
+                    }
+                    item {
+                        CharacterDetailCard(character)
+                    }
+                }
             }
         }
     }
 }
+
 
 @Preview(
     showBackground = true,
