@@ -13,7 +13,6 @@ data class Character(
     val status: String,
     val type: String,
     val url: String
-)
-{
-    val computedName get() = if(name.length > 15) "${name.substring(0,15)}..." else name
+){
+    val computedTitle get() = if(name.length > 11) "${name.substring(0,11)}..." else name // si se pasa de 11 caracteres lo extrae
 }

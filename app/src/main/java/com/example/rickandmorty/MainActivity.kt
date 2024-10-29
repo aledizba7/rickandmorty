@@ -26,6 +26,7 @@ class MainActivity : ComponentActivity() {
 
             RickAndMortyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
                     NavHost(navController = navController, startDestination = "home")
                     {
                         composable(route = "home"){
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
                             route = "detail/{id}",
                             arguments = listOf(
                                 navArgument("id"){
-                                    type= NavType.IntType
+                                    type=NavType.IntType
                                     nullable=false
                                 }
                             )
@@ -45,7 +46,9 @@ class MainActivity : ComponentActivity() {
                             CharacterDetailScreen(id = id, innerPaddingValues = innerPadding)
                         }
                     }
+
                 }
+
             }
         }
     }

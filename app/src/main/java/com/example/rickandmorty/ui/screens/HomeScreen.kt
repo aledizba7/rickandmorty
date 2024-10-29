@@ -27,64 +27,76 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.rickandmorty.composables.CharacterCard
+import com.example.rickandmorty.models.Character
 import com.example.rickandmorty.services.CharacterService
+import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
 @Composable
-fun HomeScreen(innerPadding: PaddingValues, navController: NavController) {
+fun HomeScreen(innerPadding: PaddingValues, navController: NavController){
     val scope = rememberCoroutineScope()
 
-    var isLoading by remember{
-        mutableStateOf(false)
+    var characters by remember {
+        mutableStateOf(listOf<Character>())
     }
 
-    var result by remember {
-        mutableStateOf<com.example.rickandmorty.models.Result?>(null)
+    var isLoading by remember {
+        mutableStateOf(false)
     }
 
     LaunchedEffect(key1 = true) {
         scope.launch {
-            try {
+            // La llamada a la API
+            try{
                 isLoading = true
                 val BASE_URL = "https://rickandmortyapi.com/api/"
+                // creamos instancia de product service
                 val characterService = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                     .create(CharacterService::class.java)
-                result = characterService.getCharacters()
-                isLoading = false} catch (e: Exception) {
-                Log.e("HomeScreen", "Error fetching characters: ${e.message}")
+                characters = characterService.getCharacters()// la flecha significa que es una funcion suspendida: que toma tiempo contestar
+                Log.i("HomeScreenResponse", characters.toString())
+                isLoading = false
+            }
+            catch (e:Exception){
+                characters = listOf()
                 isLoading = false
             }
         }
     }
 
-    if (isLoading) {
+    if(isLoading){
         Box(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
-        ) {
+        ){
             CircularProgressIndicator()
         }
-    } else if (result != null) { // Check if result is not null
+    }
+    else{
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            items(result!!.characters) { character -> // Access characters from result
+            items(characters){
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -92,26 +104,29 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController) {
                         .height(200.dp)
                         .padding(5.dp)
                         .clickable {
-                            navController.navigate("detail/${character.id}")
+                            navController.navigate("detail/${it.id}")
                         }
-                ) {Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    AsyncImage(
-                        model = character.image,
-                        contentDescription = character.name,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(3f),
-                        contentScale = ContentScale.Crop
-                    )
-
-                    Text(
-                        text = character.name, // Use character.name directly
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        AsyncImage(
+                            model = it.image,
+                            contentDescription = it.name,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(3f),
+                            contentScale = ContentScale.Crop
                         )
-                    )
-                }
+
+                        Text(text = it.computedTitle,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        )
+
+                    }
                 }
             }
         }
